@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tapahtumat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #333;
+            padding: 10px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .navbar a:hover {
+            background-color: #555;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            color: #000;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        p {
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .content {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigaatio -->
+    <div class="navbar">
+        <a href="index.html">Etusivu</a>
+        <a href="tapahtumat.html">Tapahtumat</a>
+        <a href="saa.html">Sää</a>
+        <a href="liikennekamera.html">Liikennekamerat</a>
+        <a href="junat.html">Junat</a>
+    </div>
+
+    <!-- Sisältö -->
+    <div class="content">
+        <div id="vastaus">Ladataan tapahtumatietoja...</div> <!-- ID "vastaus" added here -->
+    </div>
+
+    <script>
+        // Haetaan tapahtumat Tampereen avoimen datan API:sta
+        fetch('https://api.visittampere.com/api/v1/visittampere/event/published/all/?format=json&lang=fi')
+            .then(function (response) {
+                // Tarkistetaan, että vastaus on onnistunut
+                if (!response.ok) {
+                    throw new Error('Verkkovirhe: ' + response.status);
+                }
+                // Muunnetaan vastaus JSON muotoon
+                return response.json();
+            })
+            .then(function (responseJson) {
+                // Käsitellään muunnettu (eli JSON-muotoinen) vastaus
+                tapahtumat(responseJson);
+            })
+            .catch(function (error) {
+                // Jos tuli jokin virhe
+                document.getElementById("vastaus").innerHTML = "<p>Tietoa ei pystytä hakemaan: " + error.message + "</p>";
+            });
+
+        // Funktio, joka käsittelee tapahtumat ja lisää ne HTML:ään
+        function tapahtumat(data) {
+            var teksti = "<h1>Tampereella tapahtuu</h1>";  // Otsikko tapahtumille
+
+            // Käydään läpi kaikki tapahtumat
+            for (var i = 0; i < data.length; i++) {
+                let nimi = data[i].title; // && data[i].name.fi ? data[i].name.fi : "Nimi puuttuu";
+                let kuvaus = data[i].description; // && data[i].description.fi ? data[i].description.fi : "Kuvaus puuttuu";
+                let url = data[i].url;
+
+                teksti += "<h3>" + nimi + "</h3>"; // Tapahtuman nimi
+                teksti += "<p>" + kuvaus + "</p>"; // Tapahtuman kuvaus
+                teksti += "<p> <a href='" + url + "' target='_blank'>" + url + "</a></p>"; // URL linkki
+            }
+
+            // Tulostetaan sisältö div-elementtiin, jonka id on "vastaus"
+            document.getElementById("vastaus").innerHTML = teksti;
+        }
+    </script>
+
+</body>
+
+</html>

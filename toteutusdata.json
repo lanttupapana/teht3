@@ -1,0 +1,16 @@
+{
+    "toteutuksen_nimi": "Digitekniikat",
+    "Opintopisteet": "5",
+    "osallistujamäärä": 5,
+    "osallistujat": [
+        "Matti Matikainen",
+        "Oskari Olematon",
+        "Teemu Testaaja",
+        "Emmi Esimerkki",
+        "Santeri"
+    ],
+    "alkamis_aika": "2024-08-19",
+    "loppumis_aika": "2024-10-11",
+    "kesto_viikkoina": 8,
+    "kuva": "https://jaakkola.github.io/json/digi.JPG"
+}

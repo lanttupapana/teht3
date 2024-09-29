@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liikennekamerat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .navbar {
+            background-color: #333;
+            padding: 10px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+        }
+        .navbar a:hover {
+            background-color: #555;
+        }
+        h1 {
+            color: #333;
+        }
+        .content {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigaatio -->
+    <div class="navbar">
+        <a href="tapahtumat.html">Tapahtumat</a>
+        <a href="saa.html">Sää</a>
+        <a href="liikennekamera.html">Liikennekamerat</a>
+        <a href="junat.html">Junat</a>
+    </div>
+
+    <!-- Sisältö -->
+    <div class="content">
+        <h1>Liikennekamerat</h1>
+        <div id="kameratiedot">Ladataan liikennekameran kuvia...</div>
+    </div>
+
+    <script>
+        // Haetaan liikennekamerat Digitraffic API:sta
+        fetch('https://tie.digitraffic.fi/api/weathercam/v1/stations/C04507/data')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Verkkovirhe: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            let kameratDiv = document.getElementById('kameratiedot');
+            let htmlContent = '<ul>';
+            
+            if (data.presets && data.presets.length > 0) {
+                data.presets.forEach(kamera => {
+                    const aika = new Date(kamera.measuredTime).toLocaleString('fi-FI');
+                    const kuvaUrl = `https://weathercam.digitraffic.fi/${kamera.id}.jpg`;
+
+                    htmlContent += `
+                        <li>
+                            <p>Kuva otettu: ${aika}</p>
+                            <img src="${kuvaUrl}" alt="Liikennekamera" width="400">
+                        </li>`;
+                });
+            } else {
+                htmlContent = '<p>Ei saatavilla olevia kameroita.</p>';
+            }
+
+            htmlContent += '</ul>';
+            kameratDiv.innerHTML = htmlContent;
+        })
+        .catch(error => {
+            document.getElementById('kameratiedot').innerHTML = 'Liikennekamerakuvien lataaminen epäonnistui: ' + error;
+        });
+    </script>
+
+</body>
+</html>

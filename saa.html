@@ -1,0 +1,130 @@
+<html lang="fi"></html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sää Helsingissä ja Tampereella</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .navbar {
+            background-color: #333;
+            padding: 10px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+        }
+
+        .navbar a:hover {
+            background-color: #555;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        .content {
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            /* Lisäämme korttien väliin 20px */
+        }
+
+        .weather-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .weather-card img {
+            width: 100px;
+        }
+
+        .weather-card h2 {
+            color: #333;
+        }
+
+        .weather-card p {
+            margin: 10px 0;
+            font-size: 16px;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigaatio -->
+    <div class="navbar">
+        <a href="index.html">Etusivu</a>
+        <a href="tapahtumat.html">Tapahtumat</a>
+        <a href="saa.html">Sää</a>
+        <a href="liikennekamera.html">Liikennekamerat</a>
+        <a href="junat.html">Junat</a>
+    </div>
+
+    <!-- Sisältö -->
+    <h1>Sää Helsingissä ja Tampereella</h1>
+    <div class="content">
+        <!-- Kortit sää-tiedoille -->
+        <div class="weather-card" id="helsinki-saa">Ladataan Helsingin sää...</div>
+        <div class="weather-card" id="tampere-saa">Ladataan Tampereen sää...</div>
+    </div>
+
+    <script>
+        const apiKey = '665ecd56dfc08dbb50feb8b8f5034e28'; // OpenWeatherMap API-avain
+
+        // Haetaan sää-tiedot Helsingistä
+        fetch(`https://api.openweathermap.org/data/2.5/weather?lang=fi&q=helsinki&units=metric&APPID=${apiKey}`)
+            .then(response => response.json())
+            .then(data => {
+                let helsinkiDiv = document.getElementById('helsinki-saa');
+                let kuva = 'http://openweathermap.org/img/w/' + data.weather[0].icon + '.png';
+                helsinkiDiv.innerHTML = `
+                <h2>Helsinki</h2>
+                <img src="${kuva}" alt="Sääkuva">
+                <p><strong>Säätila:</strong> ${data.weather[0].description}</p>
+                <p><strong>Lämpötila:</strong> ${data.main.temp} &deg;C</p>
+                <p><strong>Tuuli:</strong> ${data.wind.speed} m/s</p>
+                <p><strong>Kosteus:</strong> ${data.main.humidity} %</p>
+            `;
+            })
+            .catch(error => {
+                document.getElementById('helsinki-saa').innerHTML = 'Helsingin sää-tietojen lataaminen epäonnistui: ' + error;
+            });
+
+        // Haetaan sää-tiedot Tampereelta
+        fetch(`https://api.openweathermap.org/data/2.5/weather?lang=fi&q=tampere&units=metric&APPID=${apiKey}`)
+            .then(response => response.json())
+            .then(data => {
+                let tampereDiv = document.getElementById('tampere-saa');
+                let kuva = 'http://openweathermap.org/img/w/' + data.weather[0].icon + '.png';
+                tampereDiv.innerHTML = `
+                <h2>Tampere</h2>
+                <img src="${kuva}" alt="Sääkuva">
+                <p><strong>Säätila:</strong> ${data.weather[0].description}</p>
+                <p><strong>Lämpötila:</strong> ${data.main.temp} &deg;C</p>
+                <p><strong>Tuuli:</strong> ${data.wind.speed} m/s</p>
+                <p><strong>Kosteus:</strong> ${data.main.humidity} %</p>
+            `;
+            })
+            .catch(error => {
+                document.getElementById('tampere-saa').innerHTML = 'Tampereen sää-tietojen lataaminen epäonnistui: ' + error;
+            });
+    </script>
+
+</body>
+
+</html>
